@@ -1,12 +1,10 @@
-string = "(21 + 234) * 4"
+string = "2 + 2 * 2"
 res = string.replace(" ", "")
 
-# Головний цикл: працює, поки у рядку є хоча б один оператор (+, -, *, /)
 while any(op in res for op in ['+', '-', '*', '/']):
     memory = []
     inside_brackets = False
     
-    # 1. Витягуємо вираз: з дужок або, якщо їх немає, беремо весь
     if "(" in res:
         for char in res:
             if char == "(":
@@ -14,60 +12,43 @@ while any(op in res for op in ['+', '-', '*', '/']):
                 continue
             elif char == ")":
                 inside_brackets = False
-                break  # Зупиняємось після першої закриваючої дужки
+                break  
                 
-            if inside_brackets:
+            if inside_brackets == True:
                 memory.append(char)
                 
-        # Зберігаємо точний текст з дужками, щоб потім замінити його на результат
         to_replace = "(" + "".join(memory) + ")"
     else:
-        # Якщо дужок немає, відправляємо в memory весь рядок, що залишився
-        memory = list(res)
+        memory = str(res)
         to_replace = res
 
-    # 2. Ваш код розподілу на chislo1, action, chislo2
-    chislo1 = []
-    action = []
-    chislo2 = []
-    switsh_to_chislo2 = False
-    
-    for char in memory:
-        if char.isdigit():
-            if switsh_to_chislo2:
-                chislo2.append(char)
-            else:
-                chislo1.append(char)
-        else:
-            action.append(char)
-            switsh_to_chislo2 = True
+ 
+    mem_str = "".join(memory) if isinstance(memory, list) else memory
+    for op in ['+', '-', '*', '/']:
+        if op in mem_str:
+            value = [mem_str.split(op)[0], op, mem_str.split(op)[1]]
+            break
 
-    # Перетворюємо на числа
-    num1 = int("".join(chislo1))
-    num2 = int("".join(chislo2))
-    operator = "".join(action)
+    chislo1 = int(value[0])
+    znak = value[1]
+    chislo2 = int(value[2])
 
-    # 3. Виконуємо дію
-    match operator:
+    match znak:
         case '+':
-            res1 = num1 + num2
+            res1 = chislo1 + chislo2
         case '-':
-            res1 = num1 - num2
+            res1 = chislo1 - chislo2
         case '*':
-            res1 = num1 * num2
+            res1 = chislo1 * chislo2
         case '/':
-            if num2 != 0:
-                # Використовуємо int(), щоб не з'явилась крапка (float),
-                # бо isdigit() не вміє читати дробові числа.
-                res1 = int(num1 / num2) 
+            if chislo2 != 0:
+                res1 = int(chislo1 / chislo2)
             else:
                 raise ValueError("Ділення на нуль!")
         case _:
-            raise ValueError(f"Невідомий оператор: {operator}")
+            raise ValueError(f"Невідомий оператор: {znak}")
 
-    # 4. ЗАМІНА: Вставляємо порахований res1 назад у рядок
-    # Функція replace замінить "(21+234)" на "255", або потім "255*2" на "510"
+
     res = res.replace(to_replace, str(res1), 1)
 
-# Коли всі дії виконані, цикл завершиться, і в res залишиться тільки фінальна цифра
-print(f"Результат обчислення виразу {string} = {res}")
+print(f"Результат обчислення виразу {string} = {res1}")
