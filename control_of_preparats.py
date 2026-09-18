@@ -37,11 +37,4 @@ for name , amount , category, teperature in medications:
 
 
 
-
-
-
-    
-    
-
-
         
