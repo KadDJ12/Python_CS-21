@@ -1,11 +1,8 @@
 from abc import ABC, abstractmethod
 
 
-
-
 class JunkItem:
   def __init__(self, name: str, quantity: int, value: float):
-    # Приймаємо float або int як числове значення ціни
     if isinstance(name, str) and type(quantity) is int and isinstance(value, (float, int)):
       self.name = name
       self.quantity = quantity
@@ -21,7 +18,6 @@ class JunkItem:
 
   def __repr__(self):
     return f"JunkItem(name='{self.name}', quantity={self.quantity}, value={self.value})"
-
 
 
 
@@ -65,17 +61,14 @@ class JunkStorage(StorageBackend):
             continue
 
           line_to_parth = line.split("|")
-          # Перевірка умови 5: наявність трьох полів
           if len(line_to_parth) != 3:
             print(f"Попередження: немає трьох полів -> {line}")
             continue
 
-          # Перевірка умови 5: валідність типів даних
           try:
             name = line_to_parth[0].strip()
             quantity = int(line_to_parth[1].strip())
             value = float(line_to_parth[2].replace(",", ".").strip())
-            # Додаємо саме екземпляр класу JunkItem, а не текстовий рядок
             items_list.append(JunkItem(name, quantity, value))
           except ValueError:
             print(f"Попередження: помилка типів (кількість не int / ціна не float) -> {line}")
