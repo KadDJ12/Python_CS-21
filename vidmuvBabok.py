@@ -9,13 +9,12 @@ def parse(line):
     except (AttributeError, ValueError): 
         return None
 
-
-def suspicious_counter(threshold):
-    def decorator(gen_func):
-        @wraps(gen_func)
+def shema_coutner_aftet_limit(threshold):
+    def decorator(random_values):
+        @wraps(random_values)
         def wrapper(*args, **kwargs):
             counted = 0
-            for line in gen_func(*args, **kwargs):
+            for line in random_values(*args, **kwargs):
                 amount = parse(line)
                 if amount is not None and abs(amount) >= threshold:
                     counted += amount
@@ -26,12 +25,12 @@ def suspicious_counter(threshold):
 
 
 def shadow(limit=200):
-    def decorator(gen_func):
-        @wraps(gen_func)
+    def decorator(random_values):
+        @wraps(random_values)
         def wrapper(*args, **kwargs):
             total = 0
             triggered = False
-            for line in gen_func(*args, **kwargs):
+            for line in random_values(*args, **kwargs):
                 print(line)
                 amount = parse(line)
                 if amount is None:
@@ -47,16 +46,13 @@ def shadow(limit=200):
 
 
 
-
-
-
-
 @shadow(limit=200)
-@suspicious_counter(threshold=250)
+@shema_coutner_aftet_limit(threshold=250)
 def transactions():
     options = ["payment 120", "refund 50", "transfer 300", "oops", "payment abc"]
     for _ in range(8):
         yield random.choice(options)
+
 
 
 gen = transactions()
@@ -65,3 +61,11 @@ try:
         next(gen)
 except StopIteration as stop:
     print("Фінальна сума:", stop.value)
+
+
+
+
+
+
+
+
